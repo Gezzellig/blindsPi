@@ -11,7 +11,7 @@ public class Receiver extends Thread{
 	private boolean running;
 	private MessageHandler messageHandler;
 	private ServerSocket tcpSocket;
-	private List<InputHandler> clientList = new ArrayList<>();
+	private List<InputHandler> clientList = new ArrayList<InputHandler>();
 	
 	public Receiver(Controller controller) {
 		messageHandler = new MessageHandler(controller, new TimerHandler(controller, this));

@@ -1,7 +1,7 @@
 public class Blind implements Runnable{
 	private Motor motor;
 	private int maxMovement, moved;
-	private String command;
+	private char command;
 	private boolean running;
 	
 	public Blind(int maxMovement, Motor motor) {
@@ -11,13 +11,13 @@ public class Blind implements Runnable{
 	}
 	
 	public void moveUp() {
-		command = "up";
+		command = 'u';
 		Thread th = new Thread(this);
 		th.start();
 	}
 	
 	public void moveDown() {
-		command = "down";
+		command = 'd';
 		Thread th = new Thread(this);
 		th.start();
 	}
@@ -27,10 +27,10 @@ public class Blind implements Runnable{
 		running = true;
 		motor.on();
 		switch (command) {
-		case "up":
+		case 'u':
 			moveTotalUp();
 			break;
-		case "down":
+		case 'd':
 			moveTotalDown();
 			break;
 		}

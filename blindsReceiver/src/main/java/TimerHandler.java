@@ -20,12 +20,12 @@ public class TimerHandler implements Runnable {
 	
 	public void parseMessage(String message, String command) {
 		String[] parts = message.split("!");
-		switch (parts[0]){
-			case ("a"): {
+		switch (parts[0].charAt(0)){
+			case ('a'): {
 				addTimedCommand(parts[1],command);
 				return;
 			}
-			case ("r"): {
+			case ('r'): {
 				removeTimedCommand(parts[1],command);
 				return;
 			}
@@ -75,7 +75,6 @@ public class TimerHandler implements Runnable {
 		}
 	}
 
-	@Override
 	public void run() {
 		running = true;
 		while (running && !tCQueue.isEmpty()) {

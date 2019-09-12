@@ -20,16 +20,16 @@ public class Controller {
 	
 	public void handleCommand(String command) {
 		String[] parts = command.split(",");
-		switch(parts[0]) {
-			case("l"): {
+		switch(parts[0].charAt(0)) {
+			case('l'): {
 				moveBlind(leftBlind,parts[1]);
 				return;
 			}
-			case("r"): {
+			case('r'): {
 				moveBlind(rightBlind,parts[1]);
 				return;
 			}
-			case("b"): {
+			case('b'): {
 				moveBlind(leftBlind,parts[1]);
 				moveBlind(rightBlind,parts[1]);
 				return;
@@ -38,16 +38,16 @@ public class Controller {
 	}
 	
 	private void moveBlind(Blind b, String s) {
-		switch(s){
-			case ("up"): {
+		switch(s.charAt(0)){
+			case ('u'): {
 				b.moveUp();
 				return;
 			}
-			case ("stop"): {
+			case ('s'): {
 				b.stopRunning();
 				return;
 			}
-			case ("down"): {
+			case ('d'): {
 				b.moveDown();
 				return;
 			}
