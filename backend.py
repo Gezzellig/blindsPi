@@ -3,6 +3,8 @@ from flask_cors import CORS
 import socket
 import requests
 
+from stepmotor import A4988
+
 app = Flask(__name__)
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
@@ -36,6 +38,12 @@ def gordijn():
 	s.send(action.encode())
 	s.close()	
 	return action
+
+@app.route('/test')
+def test():
+	motor = A4988(27, 22, 17)
+	motor.up()
+
 
 if __name__ == '__main__':
 	app.run(debug=True, host='0.0.0.0')
