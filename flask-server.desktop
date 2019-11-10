@@ -1,0 +1,4 @@
+[Desktop Entry]
+Type=Application
+Name=flask-server
+Exec=/usr/bin/python3 /home/pi/blindsPi/backend.py

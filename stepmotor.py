@@ -78,7 +78,7 @@ class A4988:
 
 
 class Blind:
-    MAX_STEP = 10000
+    MAX_STEP = 12000
     cur_step = 0
     stop_moving = False
 
@@ -93,7 +93,6 @@ class Blind:
         self.stop_moving = False
 
     def up(self):
-        print(self.cur_step)
         self.ensure_not_moving()
         self.step_motor.on()
         while not self.stop_moving and self.cur_step > 0:
@@ -102,7 +101,6 @@ class Blind:
         self.step_motor.off()
 
     def down(self):
-        print(self.cur_step)
         self.ensure_not_moving()
         self.step_motor.on()
         while not self.stop_moving and self.cur_step < self.MAX_STEP:
@@ -110,23 +108,49 @@ class Blind:
             self.cur_step += 1
         self.step_motor.off()
 
+    def stop(self):
+        self.ensure_not_moving()
+        print('cur_step: {}'.format(self.cur_step))
+
     def is_moving(self):
-        print("test moving")
         return self.step_motor.status()
 
+    def debug_down(self):
+        self.cur_step = self.MAX_STEP
+        print('Set cur_step to MAX_STEP')
 
-def main():
-    step_motor = A4988(27, 22, 17)
+
+class BlindControl:
+    def __init__(self):
+        right_step_motor = A4988(27, 22, 17)
+        self.right_blind = Blind(right_step_motor)
+
+    def right_up(self):
+        threading.Thread(target=self.right_blind.up).start()
+
+    def right_down(self):
+        threading.Thread(target=self.right_blind.down).start()
+
+    def right_stop(self):
+        self.right_blind.stop()
+
+    def debug_down(self):
+        self.right_blind.debug_down()
+
+
+"""def main():
+
     #left_blind = A4988(3, 4, 2)
 
 
-    right_blind = Blind(step_motor)
-    threading.Thread(target=right_blind.down).start()
+    b = BlindControl()
+    threading.Thread(target=b.right_down).start()
     time.sleep(1)
-    threading.Thread(target=right_blind.down).start()
-    time.sleep(3)
-    threading.Thread(target=right_blind.up).start()
-
+    b.right_stop()
+    time.sleep(1)
+    threading.Thread(target=b.right_up).start()
+    time.sleep(1)
+    b.right_stop()
 
 if __name__ == '__main__':
-    main()
+    main()"""
