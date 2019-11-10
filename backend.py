@@ -37,8 +37,7 @@ def door_quick(pw):
 
 @app.route('/api/door', methods=['GET'])
 def door():
-	pw = request.form.get("pw")
-	print(pw)
+	pw = request.args.get("pw")
 	return open_door(pw)
 
 
