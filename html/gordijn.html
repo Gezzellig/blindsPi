@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8"/>
+  <style>
+  p.sansserif {
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  </style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script>
+$(document).ready(function(){
+  $("button").click(function(){
+    $.post("http://192.168.178.248:5000/api/gordijn/".concat($(this).val()),
+    function(data,status){
+      $("button").prop("disabled",false);
+    });
+    $("button").prop("disabled",true);
+  });
+});
+
+function alarm_handler(e){
+  $.post("http://192.168.178.248:5000/api/gordijn/down/alarm",
+  {alarm_datetime: e.target.value},
+  function(data,status){
+    if (status == "dsuccess") {
+	  alert("Blinds going up at: " + data);
+	} else {
+	  alert("Something went wrong!\nStatus: "+status+"\nMessage: "+data);
+	}
+  });
+}
+
+</script>
+</head>
+<body>
+<center>
+	<H1>Luiheidinator!</H1>
+<p></p>
+<button id="up" value="up" style="width:80%">Up</button>
+<p></p>
+<button id="stop" value="stop" style="width:80%">Stop</button>
+<p></p>
+<button id="down" value="down" style="width:80%">Down</button>
+<p>
+</p>
+<p>
+</p>
+Alarm:
+<input type="datetime-local" name="alarm" onchange="alarm_handler(event);"/>
+
+
+<button value="down/debug">Debug down</button>
+</div>
+</center>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8"/>
+  <style>
+  p.sansserif {
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  </style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script>
+$(document).ready(function(){
+  $("button").click(function(){
+	  $("button").prop("disabled",true);
+      $.get("http://192.168.178.248:5000/api/door",
+      {
+        pw: $("input").val()
+      },
+      function(data,status){
+        alert(data);
+        $("button").prop("disabled",false);
+      }).fail(
+        function(xhr, status, error) {
+		  alert("Could not reach the Raspberry Pi Flask backend.");
+		  $("button").prop("disabled",false);
+	    }
+	  );
+  });
+});
+</script>
+</head>
+<body>
+<div style="text-align:center;">
+  <p class="sansserif">U wilt graag toegang?
+  <p>
+  <input type="text" id="pass" name="password" placeholder="Wachtwoord alstublieft">
+  <p>
+  <button>Sesam open u!</button>
+</div>
+</body>
+</html>

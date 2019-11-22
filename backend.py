@@ -1,33 +1,34 @@
 from flask import Flask, request
 from flask_cors import CORS
-import socket
 import requests
+from datetime import datetime
 
+import alarm
 from stepmotor import BlindControl
 
 app = Flask(__name__)
-cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
+cors = CORS(app, resources={r'/api/*': {'origins': '*'}})
 
 blind_control = BlindControl()
 
 
 @app.route('/')
 def index():
-	return "Hello world", 200
+	return 'Hello world', 200
 
 
 def open_door(pw):
-	print("REQUEST RECEIVED")
+	print('REQUEST RECEIVED')
 	duration = 5
 	try:
-		result = requests.post("http://192.168.8.139/door", data={'pw': pw, 'duration': duration})
+		result = requests.post('http://192.168.8.139/door', data={'pw': pw, 'duration': duration})
 		print(result)
 		if result.ok:
-			return "SNELL, De deur is open voor {} seconden!".format(duration), 200
+			return 'SNELL, De deur is open voor {} seconden!'.format(duration), 200
 		else:
-			return "Het wachtwoord is incorrect.", 403
+			return 'Het wachtwoord is incorrect.', 403
 	except requests.exceptions.ConnectionError:
-		return "De Arduino kon niet bereikt worden :(", 405
+		return 'De Arduino kon niet bereikt worden :(', 405
 
 
 @app.route('/api/door/quick/<pw>', methods=['GET'])
@@ -37,33 +38,46 @@ def door_quick(pw):
 
 @app.route('/api/door', methods=['GET'])
 def door():
-	pw = request.args.get("pw")
+	pw = request.args.get('pw')
 	return open_door(pw)
 
 
-@app.route('/api/gordijn/<action>', methods=['GET'])
-def gordijn(action):
-	print('GORDIJN REQUEST RECEIVED: {}'.format(action))
-	splitted = action.split(',')
-	if splitted[0] == "debug":
-		if splitted[1] == "down":
-			blind_control.debug_down()
-			return "Debug succeeded", 200
+@app.route('/api/gordijn/up', methods=['POST'])
+def gordijn_up():
+	print('up')
+	blind_control.right_up()
+	return 'Going up!', 200
 
-	real_action = splitted[1]
-	if real_action == "up":
-		print('up')
-		blind_control.right_up()
-	elif real_action == "stop":
-		print('stop')
-		blind_control.right_stop()
-		print("DONDEE")
-	elif real_action == "down":
-		print('down')
-		blind_control.right_down()
+
+@app.route('/api/gordijn/stop', methods=['POST'])
+def gordijn_stop():
+	print('stop')
+	blind_control.right_stop()
+	return 'Stopping', 200
+
+
+@app.route('/api/gordijn/down', methods=['POST'])
+def gordijn_down():
+	print('down')
+	blind_control.right_down()
+	return 'Going down!', 200
+
+
+@app.route('/api/gordijn/down/debug', methods=['POST'])
+def gordijn_down_debug():
+	print('debug down')
+	blind_control.debug_down()
+	return 'Debug succeeded', 200
+
+
+@app.route('/api/gordijn/down/alarm', methods=['POST'])
+def gordijn_down_alarm():
+	alarm_datetime_str = request.form['alarm_datetime']
+	alarm_datetime = datetime.strptime(alarm_datetime_str, '%Y-%m-%dT%H:%M')
+	if alarm.create_alarm(alarm_datetime, blind_control.right_down):
+		return 'Alarm ingesteld om: {}'.format(alarm_datetime), 200
 	else:
-		return 'Unknown action: {}'.format(action), 400
-	return "Action approved", 200
+		return 'De gegeven alarmtijd is al geweest', 400
 
 
 if __name__ == '__main__':
