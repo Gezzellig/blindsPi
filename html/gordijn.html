@@ -21,18 +21,41 @@ $(document).ready(function(){
 });
 
 function alarm_handler(e){
-  $.post("http://192.168.178.248:5000/api/gordijn/down/alarm",
-  {alarm_datetime: e.target.value},
-  function(data,status){
-    if (status == "dsuccess") {
-	  alert("Blinds going up at: " + data);
-	} else {
-	  alert("Something went wrong!\nStatus: "+status+"\nMessage: "+data);
-	}
-  });
+$.ajax({
+    type: "POST",
+    url:  "http://192.168.178.248:5000/api/gordijn/down/alarm",
+    data: {alarm_datetime: e.target.value},
+    success: function(data) {
+		//alert("Blinds gaan omhoog om: " + data.responseText);
+		alert("Alarm is ontvangen en toegevoegd.");
+	},
+	error: function(data) {
+		if (data.status != 400) {
+			alert("Something went wrong!\nStatus: "+data.status+"\nMessage: "+data.responseText);
+		}
+	},
+    statusCode: {
+        400: function(data) {
+            //alert("GEEN ALARM TOEGEVOEGD\nDe gegeven alarmtijd: "+data.responseText+" is al geweest");
+            alert("GEEN ALARM TOEGEVOEGD\nDe gegeven alarmtijd is al gepasseerd!");
+        }           
+    }
+});
 }
 
+
 </script>
+
+<style>
+.footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+}
+</style>
+
 </head>
 <body>
 <center>
@@ -45,13 +68,13 @@ function alarm_handler(e){
 <button id="down" value="down" style="width:80%">Down</button>
 <p>
 </p>
-<p>
-</p>
-Alarm:
-<input type="datetime-local" name="alarm" onchange="alarm_handler(event);"/>
+Alarm: <input type="datetime-local" name="alarm" onchange="alarm_handler(event);"/>
 
 
-<button value="down/debug">Debug down</button>
+<div class="footer">
+	<button value="up/debug">Debug up</button>
+	<p></p>
+	<button value="down/debug">Debug down</button>
 </div>
 </center>
 </body>

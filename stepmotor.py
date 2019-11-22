@@ -115,9 +115,15 @@ class Blind:
     def is_moving(self):
         return self.step_motor.status()
 
+    def debug_up(self):
+        self.cur_step = 0
+        print('DEBUG UP: Set cur_step to 0')
+
     def debug_down(self):
         self.cur_step = self.MAX_STEP
-        print('Set cur_step to MAX_STEP')
+        print('DEBUG DOWN: Set cur_step to MAX_STEP')
+
+
 
 
 class BlindControl:
@@ -134,23 +140,11 @@ class BlindControl:
     def right_stop(self):
         self.right_blind.stop()
 
+    def debug_up(self):
+        self.right_blind.debug_up()
+
     def debug_down(self):
         self.right_blind.debug_down()
 
 
-"""def main():
 
-    #left_blind = A4988(3, 4, 2)
-
-
-    b = BlindControl()
-    threading.Thread(target=b.right_down).start()
-    time.sleep(1)
-    b.right_stop()
-    time.sleep(1)
-    threading.Thread(target=b.right_up).start()
-    time.sleep(1)
-    b.right_stop()
-
-if __name__ == '__main__':
-    main()"""

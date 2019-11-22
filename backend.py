@@ -63,11 +63,18 @@ def gordijn_down():
 	return 'Going down!', 200
 
 
+@app.route('/api/gordijn/up/debug', methods=['POST'])
+def gordijn_up_debug():
+	print('debug up')
+	blind_control.debug_up()
+	return 'Debug up succeeded', 200
+
+
 @app.route('/api/gordijn/down/debug', methods=['POST'])
 def gordijn_down_debug():
 	print('debug down')
 	blind_control.debug_down()
-	return 'Debug succeeded', 200
+	return 'Debug down succeeded', 200
 
 
 @app.route('/api/gordijn/down/alarm', methods=['POST'])
@@ -75,9 +82,9 @@ def gordijn_down_alarm():
 	alarm_datetime_str = request.form['alarm_datetime']
 	alarm_datetime = datetime.strptime(alarm_datetime_str, '%Y-%m-%dT%H:%M')
 	if alarm.create_alarm(alarm_datetime, blind_control.right_down):
-		return 'Alarm ingesteld om: {}'.format(alarm_datetime), 200
+		return '{}'.format(alarm_datetime), 200
 	else:
-		return 'De gegeven alarmtijd is al geweest', 400
+		return '{}'.format(alarm_datetime), 400
 
 
 if __name__ == '__main__':
