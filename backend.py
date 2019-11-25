@@ -81,7 +81,7 @@ def gordijn_down_debug():
 def gordijn_down_alarm():
 	alarm_datetime_str = request.form['alarm_datetime']
 	alarm_datetime = datetime.strptime(alarm_datetime_str, '%Y-%m-%dT%H:%M')
-	if alarm.create_alarm(alarm_datetime, blind_control.right_down):
+	if alarm.create_alarm(alarm_datetime, blind_control.right_up):
 		return '{}'.format(alarm_datetime), 200
 	else:
 		return '{}'.format(alarm_datetime), 400
