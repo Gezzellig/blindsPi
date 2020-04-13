@@ -12,31 +12,70 @@
 <script>
 $(document).ready(function(){
   $("button").click(function(){
-	  $("button").prop("disabled",true);
-      $.get("http://192.168.178.248:5000/api/door",
-      {
-        pw: $("input").val()
-      },
-      function(data,status){
-        alert(data);
-        $("button").prop("disabled",false);
-      }).fail(
-        function(xhr, status, error) {
-		  alert("Could not reach the Raspberry Pi Flask backend.");
-		  $("button").prop("disabled",false);
-	    }
-	  );
+    $.post("http://192.168.178.248:5000/api/gordijn/".concat($(this).val()),
+    function(data,status){
+      $("button").prop("disabled",false);
+    });
+    $("button").prop("disabled",true);
   });
 });
+
+function alarm_handler(e){
+$.ajax({
+    type: "POST",
+    url:  "http://192.168.178.248:5000/api/gordijn/down/alarm",
+    data: {alarm_datetime: e.target.value},
+    success: function(data) {
+		//alert("Blinds gaan omhoog om: " + data.responseText);
+		alert("Alarm is ontvangen en toegevoegd.");
+	},
+	error: function(data) {
+		if (data.status != 400) {
+			alert("Something went wrong!\nStatus: "+data.status+"\nMessage: "+data.responseText);
+		}
+	},
+    statusCode: {
+        400: function(data) {
+            //alert("GEEN ALARM TOEGEVOEGD\nDe gegeven alarmtijd: "+data.responseText+" is al geweest");
+            alert("GEEN ALARM TOEGEVOEGD\nDe gegeven alarmtijd is al gepasseerd!");
+        }           
+    }
+});
+}
+
+
 </script>
+
+<style>
+.footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+}
+</style>
+
 </head>
 <body>
-<div style="text-align:center;">
-  <p class="sansserif">U wilt graag toegang?
-  <p>
-  <input type="text" id="pass" name="password" placeholder="Wachtwoord alstublieft">
-  <p>
-  <button>Sesam open u!</button>
+<center>
+	<H1>Luiheidinator!</H1>
+<p></p>
+<button id="up" value="up" style="width:80%">Up</button>
+<p></p>
+<button id="stop" value="stop" style="width:80%">Stop</button>
+<p></p>
+<button id="down" value="down" style="width:80%">Down</button>
+<p>
+</p>
+Alarm: <input type="datetime-local" name="alarm" onchange="alarm_handler(event);"/>
+
+
+<div class="footer">
+	<button value="up/debug">Debug up</button>
+	<p></p>
+	<button value="down/debug">Debug down</button>
 </div>
+</center>
 </body>
 </html>

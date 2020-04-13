@@ -17,7 +17,7 @@ def index():
 	return 'Hello world', 200
 
 
-def open_door(pw):
+"""def open_door(pw):
 	print('REQUEST RECEIVED')
 	duration = 5
 	try:
@@ -39,7 +39,7 @@ def door_quick(pw):
 @app.route('/api/door', methods=['GET'])
 def door():
 	pw = request.args.get('pw')
-	return open_door(pw)
+	return open_door(pw)"""
 
 
 @app.route('/api/gordijn/up', methods=['POST'])
