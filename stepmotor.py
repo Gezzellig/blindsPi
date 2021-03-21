@@ -78,7 +78,8 @@ class A4988:
 
 
 class Blind:
-    MAX_STEP = 12000
+    MAX_STEP = 16000 #int(input("Fill in the max step:"))
+    print("MAX_STEP: {}".format(MAX_STEP))
     cur_step = 0
     stop_moving = False
 
